@@ -14,9 +14,11 @@ import java.util.Scanner;
 
 
 public class Controller {
-@FXML private TextArea result;
+@FXML private TextArea resultout;
 @FXML private AnchorPane ap;
-private ArrayList<Float> tabx, taby, templist;
+private ArrayList<Double> tabx, taby, templist;
+private ArrayList<ArrayList<Double>> subresult;
+private Double h;
 
 
     public void calculate(ActionEvent e) {
@@ -32,18 +34,39 @@ private ArrayList<Float> tabx, taby, templist;
             alert.showAndWait();
         } else {
             try {
-                templist = new ArrayList<Float>();
+                templist = new ArrayList<Double>();
                 try (Scanner scanner = new Scanner(selectedFile)) {
                         while (scanner.hasNext())
-                            templist.add(Float.parseFloat(scanner.next()));
+                            templist.add(Double.parseDouble(scanner.next()));
                     } catch (FileNotFoundException fileexept) {
                         fileexept.printStackTrace();
                 }
-                tabx = new ArrayList<Float>(templist.subList(0, (templist.size()/2)));
-                taby = new ArrayList<Float>(templist.subList(templist.size()/2,templist.size()));
+                tabx = new ArrayList<Double>(templist.subList(0, (templist.size()/2)));
+                taby = new ArrayList<Double>(templist.subList(templist.size()/2,templist.size()));
                 templist.clear();
+                h = tabx.get(1) - tabx.get(0);
+                subresult = new ArrayList<ArrayList<Double>>();
+                for(int i = 0; i<tabx.size()-1; i++) {
+                    subresult.add(new ArrayList<Double>());
+                    if(i==0){
+                        for (int j = 1; j <tabx.size(); j++) {
+                            subresult.get(i).add(taby.get(j)-taby.get(j-1));
+                        }
+                    }else {
+                        for (int j = 1; j <tabx.size() - i; j++) {
+                            subresult.get(i).add(subresult.get(i-1).get(j)-subresult.get(i-1).get(j-1));
+                        }
+                    }
+                }
 
-                result.setText("x="+String.valueOf(tabx)+'\n'+"y="+String.valueOf(taby));
+                resultout.setText("W"+String.valueOf(tabx.size()-1)+"(x)=");
+                resultout.appendText(String.valueOf(taby.get(0)));
+                for(int i = 0; i<tabx.size(); i++) {
+                    resultout.appendText(String.format("%s%.1f%s%d%s%.1f%s%d%s", "+(", subresult.get(i).get(0), "/(",i+1,"!*",h,"^",i+1,")"));
+                        for (int j = 0; j <i+1; j++) {
+                            resultout.appendText(String.format("%s%.1f%s", "*(x-", tabx.get(j), ")"));
+                        }
+                }
             } catch (Exception exept) {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Błąd kalkulatora");
