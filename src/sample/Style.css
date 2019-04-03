@@ -1,0 +1,28 @@
+TextField{
+    -fx-background-color:#282828;
+    -fx-text-fill:#ffffff;
+    -fx-prompt-text-fill:#6b6a6a;
+    -fx-border-bottom: #00c9a4;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+TextField:focused{
+    -fx-effect: dropshadow(three-pass-box, #00c6ac, 10, 0, 0, 0)
+}
+Button{
+    -fx-background-color: #00c6ac;
+    -fx-border-width: 0;
+    -fx-background-radius: 0;
+}
+Button:hover{
+    -fx-background-color: #0cd3c3;
+}
+Button:pressed{
+    -fx-background-color: #01b29a;
+}
+Label{
+    -fx-text-fill:#cecece;
+}
+#bg{
+    -fx-background-color: #3b3b3b;
+}
