@@ -3,6 +3,7 @@ package sample;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Label;
 import javafx.scene.control.TextArea;
 import javafx.scene.layout.AnchorPane;
 import javafx.stage.FileChooser;
@@ -15,6 +16,7 @@ import java.util.Scanner;
 
 public class Controller {
 @FXML private TextArea resultout;
+@FXML private Label filename;
 @FXML private AnchorPane ap;
 private ArrayList<Double> tabx, taby, templist;
 private ArrayList<ArrayList<Double>> subresult;
@@ -26,6 +28,7 @@ private Double h;
         FileChooser fileChooser = new FileChooser();
         fileChooser.getExtensionFilters().addAll(new FileChooser.ExtensionFilter("Text Files", "*.txt"));
         File selectedFile = fileChooser.showOpenDialog(stage);
+        filename.setText(selectedFile.getName());
         if (selectedFile == null) {
             Alert alert = new Alert(Alert.AlertType.INFORMATION);
             alert.setTitle("Błąd kalkulatora");
@@ -41,6 +44,7 @@ private Double h;
                     } catch (FileNotFoundException fileexept) {
                         fileexept.printStackTrace();
                 }
+                filename.setText("Wybrany plik: "+selectedFile.getName());
                 tabx = new ArrayList<Double>(templist.subList(0, (templist.size()/2)));
                 taby = new ArrayList<Double>(templist.subList(templist.size()/2,templist.size()));
                 templist.clear();
@@ -61,13 +65,14 @@ private Double h;
 
                 resultout.setText("W"+String.valueOf(tabx.size()-1)+"(x)=");
                 resultout.appendText(String.valueOf(taby.get(0)));
-                for(int i = 0; i<tabx.size(); i++) {
-                    resultout.appendText(String.format("%s%.1f%s%d%s%.1f%s%d%s", "+(", subresult.get(i).get(0), "/(",i+1,"!*",h,"^",i+1,")"));
+                for(int i = 0; i<tabx.size()-1; i++) {
+                    resultout.appendText(String.format("%s%.1f%s%d%s%.1f%s%d%s", "+(", subresult.get(i).get(0), "/(",i+1,"!*",h,"^",i+1,"))"));
                         for (int j = 0; j <i+1; j++) {
                             resultout.appendText(String.format("%s%.1f%s", "*(x-", tabx.get(j), ")"));
                         }
                 }
             } catch (Exception exept) {
+                exept.printStackTrace();
                 Alert alert = new Alert(Alert.AlertType.INFORMATION);
                 alert.setTitle("Błąd kalkulatora");
                 alert.setHeaderText(null);
